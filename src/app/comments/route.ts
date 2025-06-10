@@ -1,7 +1,12 @@
 import { comment } from "./comment";
-
-export async function GET(){
-    return Response.json(comment, {
+import { type NextRequest } from "next/server";
+export async function GET(request:NextRequest){
+    const searchParams = request.nextUrl.searchParams;
+    const query = searchParams.get('query');
+    const filteredComments = query?
+        comment.filter(c => c.content.toLowerCase().includes(query.toLowerCase())) :
+        comment;
+    return Response.json(filteredComments, {
         headers: {
             'Content-Type': 'application/json',
         },
